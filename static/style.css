@@ -1,0 +1,36 @@
+.container{
+    margin: 10px auto;
+    padding: 0px;
+    width: 70%;
+    border: 1px solid black;
+    text-align: center;
+}
+article{
+    display: inline-block;
+    border: 1px solid grey;
+    width: 65%
+}
+
+form{
+    width: 75%;
+    text-align: right;
+}
+
+input{
+    width: 200px;
+    margin: 5px 0px;
+}
+
+.user{
+    border: none;
+    font-size: 14px;
+}
+
+button{
+    width: 80px;
+    margin: 5px 0px;
+}
+
+p{
+    display: inline-block;
+}

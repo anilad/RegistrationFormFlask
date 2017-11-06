@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script type="text/javascript" src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
+    <script>
+        $(document).ready(function () {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            today = yyyy + '-' + mm + '-' + dd;
+            $("#datefield").attr("max", today);
+        });//document.ready
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>My Registration Form</h1>
+        <article>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        {{message}}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="/register" method="post">
+                <label for="fName">First Name: </label>
+                <input type="text" name="fName" placeholder="Enter First Name">
+                <br>
+                <label for="lName">Last Name: </label>
+                <input type="text" name="lName" placeholder="Enter Last Name">
+                <br>
+                <label for="email">Email: </label>
+                <input type="email" name="email" placeholder="Enter Valid Email">
+                <br>
+                <label for="birthdate">Date of Birth: </label>
+                <input id="datefield" type='date' min='1899-01-01' max='2017-11-02'></input>
+                <br>
+                <label for="password">Password: </label>
+                <input type="password" name="password" placeholder="Password">
+                <br>
+                <label for="confirm">Confirm Password: </label>
+                <input type="password" name="confirm" placeholder="Confirm Password">
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+
+            <form action="/login" method="post">
+                <label for="user">User: </label>
+                <input type="text" name="user" placeholder="Enter Email">
+                <br>
+                <label for="password">Password: </label>
+                <input type="password" name="password" placeholder="Enter Password">
+                <br>
+                <button type="submit">Login</button>
+            </form>
+        </article>
+    </div>
+</body>
+
+</html>
