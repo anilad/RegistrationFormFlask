@@ -3,7 +3,11 @@ import re
 
 app = Flask(__name__)
 app.secret_key = 'keepitsecretkeepitsafe'
+
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+# length, digit, lowercase, uppercase, special character
+PASSWORD_REGEX = re.compile(r"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$")
 
 @app.route('/')
 def index():
@@ -28,14 +32,21 @@ def register():
     if len(request.form['fName'])<1:
         flash('First Name cannot be blank!')
         isValid = True
+    elif not NAME_REGEX.match(request.form['fName']):
+        flash("Invalid Name! Name cannot include numbers or special characters.")
+        isValid=True
     else:
         session['fName'] = request.form['fName']
+
     #check for valid input in lName (cannot be blank)
     if len(request.form['fName'])<1:
         flash('Last Name cannot be blank!')
         isValid = True
+    elif not NAME_REGEX.match(request.form['lName']):
+        flash("Invalid Name! Name cannot include numbers or special characters.")
     else:
         session['lName'] = (request.form['lName'])
+
     #check for valid input in email (must be valid email)
     if len(request.form['email']) < 1:
         flash("Email cannot be blank!")
@@ -45,23 +56,21 @@ def register():
         isValid = True
     else:
         session['email']=request.form['email']
-    #check for valid input in password(must be 6-10 characters and  contain upper and lowercase letters and numbers)
-    if len(request.form['password'])<6 or len(request.form['password'])>10:
-        flash('Password must be 6-10 characters long!')
+
+    #check for valid input in password(must be 8+ characters and  contain upper and lowercase letters and numbers)
+    if not PASSWORD_REGEX.match(request.form['password']):
+        flash('Password invalid! Password needs at least 8 characters, 1 uppercase, 1 number, 1 special character')
         isValid=True
     else:
-        isNum = False
-        isUpper=False
-        for el in request.form['password']:
-            if not el.isupper():
-                isUpper=True
-            if not el.isdigit():
-                isNum=True
-        if isUpper and isNum:  
-            flash('Password must contain at least 1 uppercase character and 1 number!')
-            isvalid=True
-        else:
-            session['password']=request.form['password'] 
+        session['password']=request.form['password'] 
+
+    #check if password comfirmation matches password input
+    if not request.form['confirm'] == request.form['password']:
+        flash('Password confirmation does not match Password!')
+        isValid=True
+
+    #check for valid input in birthdate
+    # if request.form['birthdate']<
     
     if isValid:
         return redirect('/')        
@@ -78,10 +87,10 @@ def login():
 @app.route('/user')
 def user():
     if session['count']>0:
-        greeting = "Welcome back"# {}".format(session['name'])
+        greeting = "Welcome back"
         session['count'] +=1
     else:
-        greeting = "Welcome"# {}".format(session['name'])
+        greeting = "Welcome"
         session['count']+=1
     return render_template('userInfo.html', greeting=greeting)
 
